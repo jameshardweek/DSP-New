@@ -6,7 +6,7 @@ import pandas as pd
 
 class Classifier:
     def __init__(self, type=None, params=None) -> None:
-        dataset = pd.read_csv('parkinsons.data')
+        dataset = pd.read_csv('../data/parkinsons.data')
         y = dataset['status']
         X = dataset.drop(['name', 'status', 'RPDE', 'DFA', 'spread1', 'spread2', 'D2', 'PPE'], axis=1)
 

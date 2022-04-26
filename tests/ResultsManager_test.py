@@ -1,5 +1,5 @@
 import unittest
-from ResultsManager import ResultsManager
+from src.ResultsManager import ResultsManager
 import pandas as pd
 from os.path import exists
 

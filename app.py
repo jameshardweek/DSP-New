@@ -1,9 +1,9 @@
 import streamlit as st
 
-from FeatureExtractor import FeatureExtractor
-from Recorder import Recorder
-from ResultsManager import ResultsManager
-import Classifiers
+from src.FeatureExtractor import FeatureExtractor
+from src.Recorder import Recorder
+from src.ResultsManager import ResultsManager
+import src.Classifiers as Classifiers
 import pandas as pd
 from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
 from joblib import load

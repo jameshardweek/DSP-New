@@ -19,7 +19,7 @@ class Recorder:
 
     # Save audio data to file
     def save(self, filename: str):
-        with wave.open(filename + '.wav', 'wb') as f:
+        with wave.open("../data/" + filename + ".wav", 'wb') as f:
             f.setnchannels(1)
             f.setframerate(44100)
             f.setsampwidth(2)
