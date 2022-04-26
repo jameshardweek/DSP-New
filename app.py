@@ -17,7 +17,7 @@ RTC_CONFIGURATION = RTCConfiguration(
 )
 
 def patient_page(results_manager):
-    st.subheader("NOTE: This will not work on Stremlit Cloud.")
+    st.subheader("NOTE: This will not work on Stremlit Cloud. Please use WebRTC.")
 
     recorder = Recorder()
 
@@ -82,8 +82,7 @@ def doctor_page(results_manager: ResultsManager):
             results_manager.save()
             dataframe_holder.dataframe(results_manager.to_dataframe())
             st.write("Predictions have been updated.")
-            st.pyplot(model.confusion_matrix())
-            st.write('updatepls')
+            st.write(model.confusion_matrix())
 
 def rtc_poc(results_manager):
     if "audio_buffer" not in st.session_state:
