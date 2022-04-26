@@ -1,2 +1,3 @@
+joblib
 praat-parselmouth
 sounddevice
