@@ -12,7 +12,7 @@ class Classifier:
         y = dataset['status']
         X = dataset.drop(['name', 'status', 'RPDE', 'DFA', 'spread1', 'spread2', 'D2', 'PPE'], axis=1)
 
-        X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.3, random_state=0)
+        self.X_train, self.X_test, self.y_train, self.y_test = train_test_split(X, y, test_size=0.3, random_state=0)
 
         if type is None or type == 'svm':
             self.clf = svm.SVC(probability=True)
@@ -22,7 +22,7 @@ class Classifier:
             elif type == 'ada':
                 self.clf = AdaBoostClassifier()
         
-        self.train(X_train, y_train)
+        self.train(self.X_train, self.y_train)
         
     def train(self, X, y):
         self.X_train = X
