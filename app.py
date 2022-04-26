@@ -80,7 +80,7 @@ def doctor_page(results_manager: ResultsManager):
             results_manager.save()
             dataframe_holder.dataframe(results_manager.to_dataframe())
             st.write("Predictions have been updated.")
-            st.write(model.confusion_matrix())
+            st.pyplot(model.confusion_matrix())
 
 def rtc_poc(results_manager):
     if "audio_buffer" not in st.session_state:
