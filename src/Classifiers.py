@@ -2,7 +2,7 @@ import pandas as pd
 from sklearn import svm
 from sklearn.ensemble import (AdaBoostClassifier, RandomForestClassifier,
                               VotingClassifier)
-from sklearn.metrics import ConfusionMatrixDisplay, classification_report
+from sklearn.metrics import ConfusionMatrixDisplay, classification_report, plot_confusion_matrix
 from sklearn.model_selection import train_test_split
 
 
@@ -44,7 +44,7 @@ class Classifier:
         return self.clf.predict_proba(features)
 
     def confusion_matrix(self, X_test=None, y_test=None):
-        return ConfusionMatrixDisplay.from_estimator(self.clf, self.X_test, self.y_test)
+        return plot_confusion_matrix(self.clf, self.X_test, self.y_test)
 
     def classification_report(self, X_test, y_test):
         predictions = self.clf.predict(X_test)
