@@ -1,14 +1,15 @@
-import streamlit as st
+import os
 
+import pandas as pd
+import pydub
+import streamlit as st
+from joblib import load
+from streamlit_webrtc import RTCConfiguration, WebRtcMode, webrtc_streamer
+
+import src.Classifiers as Classifiers
 from src.FeatureExtractor import FeatureExtractor
 from src.Recorder import Recorder
 from src.ResultsManager import ResultsManager
-import src.Classifiers as Classifiers
-import pandas as pd
-from streamlit_webrtc import webrtc_streamer, WebRtcMode, RTCConfiguration
-from joblib import load
-import pydub
-import os
 
 RTC_CONFIGURATION = RTCConfiguration(
     {"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]}

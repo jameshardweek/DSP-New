@@ -1,6 +1,8 @@
-import sounddevice as sd
 import wave
+
 import numpy as np
+import sounddevice as sd
+
 
 class Recorder:
     def __init__(self) -> None:

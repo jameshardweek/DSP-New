@@ -4,3 +4,5 @@ sounddevice
 streamlit
 streamlit-webrtc
 sklearn
+pydub
+wave

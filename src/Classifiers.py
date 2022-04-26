@@ -1,8 +1,10 @@
+import pandas as pd
 from sklearn import svm
-from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier, VotingClassifier
+from sklearn.ensemble import (AdaBoostClassifier, RandomForestClassifier,
+                              VotingClassifier)
 from sklearn.metrics import ConfusionMatrixDisplay, classification_report
 from sklearn.model_selection import train_test_split
-import pandas as pd
+
 
 class Classifier:
     def __init__(self, type=None, params=None) -> None:
