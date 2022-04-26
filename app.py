@@ -17,6 +17,8 @@ RTC_CONFIGURATION = RTCConfiguration(
 )
 
 def patient_page(results_manager):
+    st.subheader("NOTE: This will not work on Stremlit Cloud.")
+
     recorder = Recorder()
 
     st.markdown("""
@@ -140,7 +142,7 @@ def main():
     st.title("Parkinson's Diagnostic Tool")
 
     pages = {
-        "Patient view" : patient_page,
+        "Patient view (SoundDevice)" : patient_page,
         "Patient view (WebRTC)" : rtc_poc,
         "Doctor view" : doctor_page,
     }
