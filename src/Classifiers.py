@@ -44,7 +44,7 @@ class Classifier:
         return self.clf.predict_proba(features)
 
     def confusion_matrix(self, X_test=None, y_test=None):
-        return ConfusionMatrixDisplay.from_estimator(self.cf, self.X_test, self.y_test)
+        return ConfusionMatrixDisplay.from_estimator(self.clf, self.X_test, self.y_test)
 
     def classification_report(self, X_test, y_test):
         predictions = self.clf.predict(X_test)
