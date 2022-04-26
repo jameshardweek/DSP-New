@@ -153,7 +153,7 @@ def main():
 
     st.subheader(page_title)
 
-    results_manager = ResultsManager('../results/results.csv')
+    results_manager = ResultsManager('results/results.csv')
     page_func = pages[page_title]
     page_func(results_manager)
 
