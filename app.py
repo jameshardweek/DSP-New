@@ -140,8 +140,8 @@ def main():
     st.title("Parkinson's Diagnostic Tool")
 
     pages = {
-        "Patient view (SoundDevice)" : patient_page,
         "Patient view (WebRTC)" : rtc_poc,
+        "Patient view (SoundDevice)" : patient_page,
         "Doctor view" : doctor_page,
     }
 
