@@ -154,6 +154,7 @@ class TestClassifier(unittest.TestCase):
         self.assertTrue(exists('models/SVM'))
 
         loaded_svm = load('models/SVM')
+        loaded_svm.score(self.X_test, self.y_test)
 
         self.assertIsNotNone(loaded_svm)
 
