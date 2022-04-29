@@ -7,7 +7,7 @@ from joblib import load
 from streamlit_webrtc import RTCConfiguration, WebRtcMode, webrtc_streamer
 from sklearn.metrics import plot_confusion_matrix
 
-import src.Classifiers as Classifiers
+from src.Classifier import *
 from src.FeatureExtractor import FeatureExtractor
 from src.Recorder import Recorder
 from src.ResultsManager import ResultsManager
@@ -17,9 +17,7 @@ RTC_CONFIGURATION = RTCConfiguration(
 )
 
 def patient_page(results_manager):
-    st.subheader("NOTE: This will not work on Stremlit Cloud. Please use WebRTC.")
-
-    recorder = Recorder()
+    # st.subheader("NOTE: This will not work on Stremlit Cloud. Please use WebRTC.")
 
     st.markdown("""
     <style>
@@ -32,7 +30,8 @@ def patient_page(results_manager):
     </style>""", unsafe_allow_html=True)
 
     if st.button("Record"):
-        with st.spinner(f"Say 'aaaaa' for 5 seconds..."):
+        recorder = Recorder()
+        with st.spinner(f"Say 'aaahhh' for 5 seconds..."):
             audio = recorder.record(5)
         
         try:
@@ -49,29 +48,47 @@ def doctor_page(results_manager: ResultsManager):
     dataframe_holder = st.empty()
 
     if search:
+        features_holder = st.empty()
         status = results_manager.get_status(search)
 
-        if status == 0:
+        if status is None:
+            st.error(f"Patient {search} does not exist in results table.")
+        elif status == 0:
             st.success(f"Patient {search} has not displayed vocal traits associated with Parkinson's disease.")
         elif status == 1:
             st.warning(f"Patient {search} has displayed vocal traits associated with Parkinsons's disease. Further analysis required.")
-        else:
+        elif status == -1:
             st.error(f"Patient {search} does not yet have a prediction.")
         
-        f"Features for patient {search}:"
-        st.write(results_manager.to_dataframe(results_manager.get_features(search)))
+        if status is not None:
+            features_holder.dataframe(results_manager.to_dataframe(results_manager.get_features(search)))
+        # st.write(results_manager.to_dataframe(results_manager.get_features(search)))
 
-        if st.button(f"Remove results for patient {search}"):
-            results_manager.remove_results(search)
-            results_manager.save()
-            st.success(f"Results for patient {search} have been removed.")
+        if status == -1:
+            if st.button(f"Generate results for patient {search}"):
+                    model = load('models/SVM')
+                    # model = Classifiers.SVM()
+                    features = results_manager.get_features(search)
+                    features = {k: v for k, v in features.items() if not pd.isnull(v)}
+                    features_dataframe = results_manager.to_dataframe(features)
+                    prediction = model.predict(features_dataframe)
+                    results_manager.set_status(search, prediction[0])
+                    results_manager.save()
+                    features_holder.dataframe(results_manager.to_dataframe(results_manager.get_features(search)))
+                    st.write("Predictions have been updated.")
+
+        if status is not None:
+            if st.button(f"Remove results for patient {search}"):
+                results_manager.remove_results(search)
+                results_manager.save()
+                st.success(f"Results for patient {search} have been removed.")
     else:
         # st.write(results_manager.to_dataframe())
         dataframe_holder.dataframe(results_manager.to_dataframe())
 
         if st.button("Generate predictions"):
-            # model = load('voting_classifier')
-            model = Classifiers.SVM()
+            model = load('models/SVM')
+            # model = Classifiers.SVM()
             unpredicted = results_manager.get_unpredicted()
             for uid in unpredicted:
                 features = results_manager.get_features(uid)
@@ -102,7 +119,7 @@ def rtc_poc(results_manager):
         if webrtc_ctx.audio_receiver:
             audio_frames = webrtc_ctx.audio_receiver.get_frames(timeout=1)
 
-            status_indicator.write("Please make a sustained 'aaaaaa' sound for around 5 seconds.")
+            status_indicator.write("Please make a sustained 'aaahhh' sound for around 5 seconds.")
 
             sound_chunk = pydub.AudioSegment.empty()
             for audio_frame in audio_frames:
@@ -135,6 +152,8 @@ def rtc_poc(results_manager):
     
         st.success(f"Thank you for your recording. Your UID is: {uid}. Please report to your doctor for further information.")
 
+def dev_page(results_manager):
+    None
 
 def main():
     st.title("Parkinson's Diagnostic Tool")
@@ -143,6 +162,7 @@ def main():
         "Patient view (WebRTC)" : rtc_poc,
         "Patient view (SoundDevice)" : patient_page,
         "Doctor view" : doctor_page,
+        "Developer view" : dev_page,
     }
 
     page_titles = pages.keys()

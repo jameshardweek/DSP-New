@@ -3,9 +3,9 @@ from os.path import exists
 from random import choice
 
 class ResultsManager:
-    def __init__(self, results_file) -> None:
-        self.col_names = ["MDVP:Fo(Hz)","MDVP:Fhi(Hz)","MDVP:Flo(Hz)","MDVP:Jitter(%)","MDVP:Jitter(Abs)","MDVP:RAP","MDVP:PPQ","Jitter:DDP","MDVP:Shimmer","MDVP:Shimmer(dB)","Shimmer:APQ3","Shimmer:APQ5","MDVP:APQ","Shimmer:DDA","NHR","HNR","status","RPDE","DFA","spread1","spread2","D2","PPE"]
+    col_names = ["MDVP:Fo(Hz)","MDVP:Fhi(Hz)","MDVP:Flo(Hz)","MDVP:Jitter(%)","MDVP:Jitter(Abs)","MDVP:RAP","MDVP:PPQ","Jitter:DDP","MDVP:Shimmer","MDVP:Shimmer(dB)","Shimmer:APQ3","Shimmer:APQ5","MDVP:APQ","Shimmer:DDA","NHR","HNR","status","RPDE","DFA","spread1","spread2","D2","PPE"]
 
+    def __init__(self, results_file) -> None:
         if '.csv' not in results_file:
             results_file += '.csv'
             
@@ -41,12 +41,14 @@ class ResultsManager:
             try:
                 return int(self.results[uid]['status'])
             except:
-                return None
+                return -1
+        else:
+            return None
 
     # Get features for given UID
     def get_features(self, uid: str) -> dict:
         if uid in self.results:
-            return {x: self.results[uid][x] for x in self.results[uid] if x != 'status'}
+            return {k: v for k, v in self.results[uid].items() if k != 'status'}
 
     # Update the status for a given UID
     def set_status(self, uid: str, status: bool) -> None:
@@ -57,8 +59,6 @@ class ResultsManager:
     def remove_results(self, uid: str) -> None:
         if uid in self.results:
             del(self.results[uid])
-        else:
-            return None
 
     # Returns a list of UIDs without predictions
     def get_unpredicted(self) -> list:

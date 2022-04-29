@@ -13,6 +13,7 @@ class Recorder:
     def record(self, length):
         print(f"Recording for {length} seconds...")
         audio = sd.rec(int(length * self.SAMPLERATE), samplerate=self.SAMPLERATE, channels=self.CHANNELS, blocking=True)
+        # Normalise audio to 16-bit range
         audio = audio / audio.max() * np.iinfo(np.int16).max
         audio = audio.astype(np.int16)
         self.audio_data = audio
@@ -21,12 +22,14 @@ class Recorder:
 
     # Save audio data to file
     def save(self, filename: str):
-        with wave.open("../data/" + filename + ".wav", 'wb') as f:
-            f.setnchannels(1)
-            f.setframerate(44100)
-            f.setsampwidth(2)
-            f.writeframes(self.audio_data)
+        if self.audio_data is not None:
+            with wave.open(filename, 'wb') as f:
+                f.setnchannels(1)
+                f.setframerate(44100)
+                f.setsampwidth(2)
+                f.writeframes(self.audio_data)
 
     # Playback recorded audio
     def play(self):
-        sd.play(self.audio_data)
+        if self.audio_data is not None:
+            sd.play(self.audio_data)

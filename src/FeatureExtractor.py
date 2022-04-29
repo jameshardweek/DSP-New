@@ -12,25 +12,35 @@ class FeatureExtractor:
     def __init__(self, sound_data) -> None:
         self.features = {}
 
+        # Generate voice report as string
         sound = pm.Sound(sound_data)
         pitch = sound.to_pitch()
         pulses = pm.praat.call([sound, pitch], "To PointProcess (cc)")
         voice_report = pm.praat.call([sound, pitch, pulses], "Voice report", 2,0,75,500,1.3,1.6,0.03,0.45)
 
+        # Parse voice report as a dictionary
         voice_report_dict = dict(item.strip().split(": ") for item in voice_report.split("\n")[1:] if ": " in item)
 
+        # Iterate over dictionary, sanitising values
         for key, value in voice_report_dict.items():
             if value == '--undefined--':
-                continue
+                new_value = None
+            # Remove all non-numeric characters from value
             new_value = ''.join(s for s in value if s.isdigit() or s == '.' or s == '%' or s == 'E' or s == '-' or s == '(')
+            # If field is one with a bracket, only obtain the most significant value
             if '(' in new_value:
                 new_value = new_value.split('(')[0]
+            # If value is a percentage, represent as decimal
             if '%' in new_value:
                 voice_report_dict[key] = float(new_value.replace('%','')) / 100
+            # Else just parse value as a float
             else:
-                voice_report_dict[key] = float(new_value)
+                try:
+                    voice_report_dict[key] = float(new_value)
+                except:
+                    voice_report_dict[key] = None
 
-        relevant_features = {}
+        # Features can be identified using either naming convention
         for key, value in self.praat_dataset_labels.items():
             voice_report_dict[value] = voice_report_dict[key]
 
@@ -61,6 +71,9 @@ class FeatureExtractor:
     def calculate_ppe(self) -> float:
         return None
 
+    # Returns a dictionary of features
+    # If a list of features is passed, return only those features
+    # Else return all features
     def get_features(self, features=None) -> dict:
         if features is None:
             return self.features
