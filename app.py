@@ -46,19 +46,20 @@ def patient_page(results_manager):
 def doctor_page(results_manager: ResultsManager):
     search = st.text_input("Search UID")
     dataframe_holder = st.empty()
+    results_message = st.empty()
 
     if search:
         features_holder = st.empty()
         status = results_manager.get_status(search)
 
         if status is None:
-            st.error(f"Patient {search} does not exist in results table.")
+            results_message.error(f"Patient {search} does not exist in results table.")
         elif status == 0:
-            st.success(f"Patient {search} has not displayed vocal traits associated with Parkinson's disease.")
+            results_message.success(f"Patient {search} has not displayed vocal traits associated with Parkinson's disease.")
         elif status == 1:
-            st.warning(f"Patient {search} has displayed vocal traits associated with Parkinsons's disease. Further analysis required.")
+            results_message.warning(f"Patient {search} has displayed vocal traits associated with Parkinsons's disease. Further analysis required.")
         elif status == -1:
-            st.error(f"Patient {search} does not yet have a prediction.")
+            results_message.error(f"Patient {search} does not yet have a prediction.")
         
         if status is not None:
             dataframe_holder.dataframe(results_manager.to_dataframe(results_manager.get_features(search)))
@@ -82,6 +83,8 @@ def doctor_page(results_manager: ResultsManager):
                 results_manager.remove_results(search)
                 results_manager.save()
                 st.success(f"Results for patient {search} have been removed.")
+                dataframe_holder.empty()
+                results_message.empty()
     else:
         # st.write(results_manager.to_dataframe())
         dataframe_holder.dataframe(results_manager.to_dataframe())
