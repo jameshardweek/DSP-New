@@ -124,6 +124,8 @@ def doctor_page(results_manager: ResultsManager):
 def rtc_poc(results_manager):
     if "audio_buffer" not in st.session_state:
         st.session_state["audio_buffer"] = pydub.AudioSegment.empty()
+    
+    st.write(f"Press Start to begin recording.")
 
     webrtc_ctx = webrtc_streamer(
         key="sendonly-audio",
