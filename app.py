@@ -61,7 +61,7 @@ def doctor_page(results_manager: ResultsManager):
             st.error(f"Patient {search} does not yet have a prediction.")
         
         if status is not None:
-            features_holder.dataframe(results_manager.to_dataframe(results_manager.get_features(search)))
+            dataframe_holder.dataframe(results_manager.to_dataframe(results_manager.get_features(search)))
         # st.write(results_manager.to_dataframe(results_manager.get_features(search)))
 
         if status == -1:
@@ -74,7 +74,7 @@ def doctor_page(results_manager: ResultsManager):
                     prediction = model.predict(features_dataframe)
                     results_manager.set_status(search, prediction[0])
                     results_manager.save()
-                    features_holder.dataframe(results_manager.to_dataframe(results_manager.get_features(search)))
+                    dataframe_holder.dataframe(results_manager.to_dataframe(results_manager.get_features(search)))
                     st.write("Predictions have been updated.")
 
         if status is not None:
