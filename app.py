@@ -43,15 +43,25 @@ def patient_page(results_manager):
             "Could not extract vocal features. Please try again."
             print(e)
 
+def status_message(status, search):
+    if status is None:
+        return st.error(f"Patient {search} does not exist in results table.")
+    elif status == 0:
+        return st.success(f"Patient {search} has not displayed vocal traits associated with Parkinson's disease.")
+    elif status == 1:
+        return st.warning(f"Patient {search} has displayed vocal traits associated with Parkinsons's disease. Further analysis required.")
+    elif status == -1:
+        return st.error(f"Patient {search} does not yet have a prediction.")
+
 def doctor_page(results_manager: ResultsManager):
     search = st.text_input("Search UID")
     dataframe_holder = st.empty()
     results_message = st.empty()
 
     if search:
-        features_holder = st.empty()
         status = results_manager.get_status(search)
 
+        # results_message = status_message(status, search)
         if status is None:
             results_message.error(f"Patient {search} does not exist in results table.")
         elif status == 0:
@@ -75,8 +85,16 @@ def doctor_page(results_manager: ResultsManager):
                     prediction = model.predict(features_dataframe)
                     results_manager.set_status(search, prediction[0])
                     results_manager.save()
+                    status = results_manager.get_status(search)
                     dataframe_holder.dataframe(results_manager.to_dataframe(results_manager.get_features(search)))
-                    st.write("Predictions have been updated.")
+                    if status is None:
+                        results_message.error(f"Patient {search} does not exist in results table.")
+                    elif status == 0:
+                        results_message.success(f"Patient {search} has not displayed vocal traits associated with Parkinson's disease.")
+                    elif status == 1:
+                        results_message.warning(f"Patient {search} has displayed vocal traits associated with Parkinsons's disease. Further analysis required.")
+                    elif status == -1:
+                        results_message.error(f"Patient {search} does not yet have a prediction.")
 
         if status is not None:
             if st.button(f"Remove results for patient {search}"):
