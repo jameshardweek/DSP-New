@@ -173,7 +173,7 @@ def rtc_poc(results_manager):
         results_manager.save()
         os.remove('temp.wav')
     
-        st.success(f"Thank you for your recording. Your UID is: {uid}. Please report to your doctor for further information.")
+        st.success(f"Thank you for your recording. Your UID is: {uid}. Please report to your doctor with your UID number for further information.")
 
 def dev_page(results_manager):
     None
